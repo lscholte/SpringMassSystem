@@ -1,0 +1,3 @@
+set(INCLUDE_FILES 
+	"${INCLUDE_DIR}/BlankScene.hpp"
+	PARENT_SCOPE)

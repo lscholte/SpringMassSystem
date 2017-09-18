@@ -1,0 +1,1 @@
+set(SOURCE_FILES "${SOURCE_DIR}/main.cpp" PARENT_SCOPE)

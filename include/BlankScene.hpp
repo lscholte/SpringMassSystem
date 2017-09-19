@@ -10,9 +10,6 @@ class BlankScene : public atlas::utils::Scene
 		~BlankScene();
 	
 		void renderScene() override;
-	
-	private:
-		atlas::gl::Shader mShader;
 };
 
 #endif

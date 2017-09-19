@@ -1,4 +1,5 @@
 #include "Coil.hpp"
+#include "Shader.hpp"
 #include <atlas/core/GLFW.hpp>
 
 constexpr GLfloat Coil::POSITIONS[][3] = {
@@ -103,13 +104,7 @@ constexpr GLint Coil::INDICES[][3] = {
 	{3+16, 6+16, 2+16}, //Face 6 -y
 };
 
-Coil::Coil() :
-	Coil(glm::mat4(1.0f))
-{
-}
-
-Coil::Coil(glm::mat4 const &t) :
-	atlas::utils::Geometry(t)
+Coil::Coil()
 {
 	glGenVertexArrays(1, &mVao);
 	glGenBuffers(1, &mPositionBuffer);
@@ -135,6 +130,17 @@ Coil::Coil(glm::mat4 const &t) :
 	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (GLvoid*)0);
 	
 	glBindVertexArray(0);
+
+	std::vector<atlas::gl::ShaderUnit> shaderUnits
+	{
+		atlas::gl::ShaderUnit(generated::Shader::getShaderDirectory() + "/scene.vert", GL_VERTEX_SHADER),
+		atlas::gl::ShaderUnit(generated::Shader::getShaderDirectory() + "/scene.frag", GL_FRAGMENT_SHADER)
+	};
+	
+	mShaders.push_back(atlas::gl::Shader(shaderUnits));
+	
+	mShaders[0].compileShaders();
+	mShaders[0].linkShaders();
 }
 
 Coil::~Coil()
@@ -143,8 +149,11 @@ Coil::~Coil()
 
 void Coil::renderGeometry(atlas::math::Matrix4 const &projection, atlas::math::Matrix4 const &view)
 {
-//	glm::mat4 modelViewProjection = projection * view * mModel;
-//	glUniformMatrix4fv(mUniforms["ModelViewProjection"], 1, GL_FALSE, &modelViewProjection[0][0]);
+	mShaders[0].enableShaders();
+	
+	glm::mat4 modelViewProjection = projection * view * mModel;
+	// glUniformMatrix4fv(mUniforms["ModelViewProjection"], 1, GL_FALSE, &modelViewProjection[0][0]);
+	glUniformMatrix4fv(mShaders[0].getUniformVariable("ModelViewProjection"), 1, GL_FALSE, &modelViewProjection[0][0]);
 	
 	//If I don't do this, my faces will be inside out
 	//because I specified the cube vertices in clockwise order
@@ -157,6 +166,8 @@ void Coil::renderGeometry(atlas::math::Matrix4 const &projection, atlas::math::M
 	glDrawElements(GL_TRIANGLES, sizeof(Coil::INDICES), GL_UNSIGNED_INT, (void *) 0);
 
 	glBindVertexArray(0);
+
+	mShaders[0].disableShaders();	
 }
 
 void Coil::updateGeometry(atlas::core::Time<> const &t)

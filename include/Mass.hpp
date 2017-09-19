@@ -6,17 +6,21 @@
 class Mass : public atlas::utils::Geometry
 {
 	public:
-		Mass();
-		Mass(glm::mat4 const &t);
-	
+		Mass();	
 		~Mass();
 	
 		void renderGeometry(atlas::math::Matrix4 const &projection, atlas::math::Matrix4 const &view) override;
 		void updateGeometry(atlas::core::Time<> const &t) override;
 	
+		void setMass(float mass);
+		float getMass() const;
+	
 	private:
 		GLuint mVao;
 		GLuint mPositionBuffer, mNormalBuffer, mColorBuffer, mIndexBuffer;
+	
+		//Mass of the object in kilograms
+		float mMass;
 	
 		static const GLfloat POSITIONS[][3];
 		static const GLfloat NORMALS[][3];

@@ -3,6 +3,7 @@
 
 #include <atlas/utils/Scene.hpp>
 #include "Mass.hpp"
+#include "Coil.hpp"
 
 class BlankScene : public atlas::utils::Scene
 {
@@ -14,6 +15,7 @@ class BlankScene : public atlas::utils::Scene
 	
 	private:
 		Mass mMass;
+		Coil mCoil;
 };
 
 #endif

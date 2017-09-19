@@ -27,4 +27,5 @@ void BlankScene::renderScene()
 	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 	glClear(GL_COLOR_BUFFER_BIT);
 	mMass.renderGeometry(projection, view);
+	mCoil.renderGeometry(projection, view);
 }

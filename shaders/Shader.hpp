@@ -3,14 +3,17 @@
 
 #include <string>
 
-namespace Shader
+namespace generated
 {
-	
-	std::string getShaderDirectory()
+	class Shader
 	{
-		return "@SHADER_DIR@";
-	}
-	
+		public:
+			static std::string getShaderDirectory()
+			{
+				return "@SHADER_DIR@";
+			}
+	};
 }
+
 
 #endif

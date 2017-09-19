@@ -2,6 +2,7 @@
 #define BlankScene_hpp
 
 #include <atlas/utils/Scene.hpp>
+#include "Mass.hpp"
 
 class BlankScene : public atlas::utils::Scene
 {
@@ -10,6 +11,9 @@ class BlankScene : public atlas::utils::Scene
 		~BlankScene();
 	
 		void renderScene() override;
+	
+	private:
+		Mass mMass;
 };
 
 #endif

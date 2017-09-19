@@ -4,9 +4,11 @@
 int main()
 {
 	auto &application = atlas::utils::Application::getInstance();
-	atlas::utils::ScenePointer scene = std::make_unique<BlankScene>();
 	
 	application.createWindow(1024, 1024, "Spring Mass System");
+	
+	atlas::utils::ScenePointer scene = std::make_unique<BlankScene>();
+	
 	application.addScene(std::move(scene));
 	application.runApplication();
 	

@@ -1,4 +1,2 @@
-set(SOURCE_FILES 
-	"${SOURCE_DIR}/main.cpp"
-	"${SOURCE_DIR}/BlankScene.cpp"
-	PARENT_SCOPE)
+file(GLOB SOURCE *.cpp)
+set(SOURCE_FILES ${SOURCE} PARENT_SCOPE)

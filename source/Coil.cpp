@@ -1,5 +1,4 @@
 #include "Coil.hpp"
-#include "Shader.hpp"
 #include <atlas/core/GLFW.hpp>
 
 constexpr GLfloat Coil::POSITIONS[][3] = {
@@ -104,7 +103,13 @@ constexpr GLint Coil::INDICES[][3] = {
 	{3+16, 6+16, 2+16}, //Face 6 -y
 };
 
-Coil::Coil()
+Coil::Coil() :
+	Coil(glm::mat4(1.0f))
+{
+}
+
+Coil::Coil(glm::mat4 const &t) :
+	atlas::utils::Geometry(t)
 {
 	glGenVertexArrays(1, &mVao);
 	glGenBuffers(1, &mPositionBuffer);
@@ -128,21 +133,8 @@ Coil::Coil()
 	glBufferData(GL_ARRAY_BUFFER, sizeof(Coil::COLORS), Coil::COLORS, GL_STATIC_DRAW);
 	glEnableVertexAttribArray(2);
 	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (GLvoid*)0);
-
+	
 	glBindVertexArray(0);
-	
-	std::vector<atlas::gl::ShaderUnit> shaderUnits
-	{
-		atlas::gl::ShaderUnit(generated::Shader::getShaderDirectory() + "/scene.vert", GL_VERTEX_SHADER),
-		atlas::gl::ShaderUnit(generated::Shader::getShaderDirectory() + "/scene.frag", GL_FRAGMENT_SHADER)
-	};
-	
-	mShader = atlas::gl::Shader(shaderUnits);
-	
-	mShader.compileShaders();	
-	mShader.linkShaders();
-	
-	mUniforms.insert(UniformKey("ModelViewProjection", mShader.getUniformVariable("ModelViewProjection")));
 }
 
 Coil::~Coil()
@@ -151,12 +143,8 @@ Coil::~Coil()
 
 void Coil::renderGeometry(atlas::math::Matrix4 const &projection, atlas::math::Matrix4 const &view)
 {
-	mShader.enableShaders();
-	
-	glm::mat4 model = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, 2.0f));
-	model = glm::scale(model, glm::vec3(0.1f, 0.1f, 3.0f));
-	glm::mat4 modelViewProjection = projection * view * model;
-	glUniformMatrix4fv(mUniforms["ModelViewProjection"], 1, GL_FALSE, &modelViewProjection[0][0]);
+//	glm::mat4 modelViewProjection = projection * view * mModel;
+//	glUniformMatrix4fv(mUniforms["ModelViewProjection"], 1, GL_FALSE, &modelViewProjection[0][0]);
 	
 	//If I don't do this, my faces will be inside out
 	//because I specified the cube vertices in clockwise order
@@ -169,8 +157,6 @@ void Coil::renderGeometry(atlas::math::Matrix4 const &projection, atlas::math::M
 	glDrawElements(GL_TRIANGLES, sizeof(Coil::INDICES), GL_UNSIGNED_INT, (void *) 0);
 
 	glBindVertexArray(0);
-	
-	mShader.disableShaders();
 }
 
 void Coil::updateGeometry(atlas::core::Time<> const &t)

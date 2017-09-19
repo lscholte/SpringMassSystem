@@ -1,5 +1,4 @@
 #include "Mass.hpp"
-#include "Shader.hpp"
 
 constexpr GLfloat Mass::POSITIONS[][3] = {
 	{0.5, 0.5, 0.5},
@@ -103,7 +102,13 @@ constexpr GLint Mass::INDICES[][3] = {
 	{3+16, 6+16, 2+16}, //Face 6 -y
 };
 
-Mass::Mass()
+Mass::Mass() :
+	Mass(glm::mat4(1.0f))
+{
+}
+
+Mass::Mass(glm::mat4 const &t) :
+	atlas::utils::Geometry(t)
 {
 	glGenVertexArrays(1, &mVao);
 	glGenBuffers(1, &mPositionBuffer);
@@ -127,21 +132,8 @@ Mass::Mass()
 	glBufferData(GL_ARRAY_BUFFER, sizeof(Mass::COLORS), Mass::COLORS, GL_STATIC_DRAW);
 	glEnableVertexAttribArray(2);
 	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (GLvoid*)0);
-
+	
 	glBindVertexArray(0);
-	
-	std::vector<atlas::gl::ShaderUnit> shaderUnits
-	{
-		atlas::gl::ShaderUnit(generated::Shader::getShaderDirectory() + "/scene.vert", GL_VERTEX_SHADER),
-		atlas::gl::ShaderUnit(generated::Shader::getShaderDirectory() + "/scene.frag", GL_FRAGMENT_SHADER)
-	};
-	
-	mShader = atlas::gl::Shader(shaderUnits);
-	
-	mShader.compileShaders();
-	mShader.linkShaders();
-	
-	mUniforms.insert(UniformKey("ModelViewProjection", mShader.getUniformVariable("ModelViewProjection")));
 }
 
 Mass::~Mass()
@@ -150,10 +142,8 @@ Mass::~Mass()
 
 void Mass::renderGeometry(atlas::math::Matrix4 const &projection, atlas::math::Matrix4 const &view)
 {
-	mShader.enableShaders();
-	
-	glm::mat4 modelViewProjection = projection * view; //model is currently identity matrix
-	glUniformMatrix4fv(mUniforms["ModelViewProjection"], 1, GL_FALSE, &modelViewProjection[0][0]);
+//	glm::mat4 modelViewProjection = projection * view * mModel;
+//	glUniformMatrix4fv(mUniforms["ModelViewProjection"], 1, GL_FALSE, &modelViewProjection[0][0]);
 	
 	//If I don't do this, my faces will be inside out
 	//because I specified the cube vertices in clockwise order
@@ -166,8 +156,6 @@ void Mass::renderGeometry(atlas::math::Matrix4 const &projection, atlas::math::M
 	glDrawElements(GL_TRIANGLES, sizeof(Mass::INDICES), GL_UNSIGNED_INT, (void *) 0);
 
 	glBindVertexArray(0);
-	
-	mShader.disableShaders();
 }
 
 void Mass::updateGeometry(atlas::core::Time<> const &t)

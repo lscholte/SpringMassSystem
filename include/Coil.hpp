@@ -7,6 +7,8 @@ class Coil : public atlas::utils::Geometry
 {
 	public:
 		Coil();
+		Coil(glm::mat4 const &t);
+	
 		~Coil();
 	
 		void renderGeometry(atlas::math::Matrix4 const &projection, atlas::math::Matrix4 const &view) override;
@@ -20,8 +22,6 @@ class Coil : public atlas::utils::Geometry
 	private:
 		GLuint mVao;
 		GLuint mPositionBuffer, mNormalBuffer, mColorBuffer, mIndexBuffer;
-		atlas::gl::Shader mShader;
-	
 };
 
 #endif

@@ -7,6 +7,8 @@ class Mass : public atlas::utils::Geometry
 {
 	public:
 		Mass();
+		Mass(glm::mat4 const &t);
+	
 		~Mass();
 	
 		void renderGeometry(atlas::math::Matrix4 const &projection, atlas::math::Matrix4 const &view) override;
@@ -20,8 +22,6 @@ class Mass : public atlas::utils::Geometry
 	private:
 		GLuint mVao;
 		GLuint mPositionBuffer, mNormalBuffer, mColorBuffer, mIndexBuffer;
-		atlas::gl::Shader mShader;
-	
 };
 
 #endif

@@ -2,8 +2,6 @@
 #define BlankScene_hpp
 
 #include <atlas/utils/Scene.hpp>
-#include "Mass.hpp"
-#include "Coil.hpp"
 
 class BlankScene : public atlas::utils::Scene
 {
@@ -14,8 +12,7 @@ class BlankScene : public atlas::utils::Scene
 		void renderScene() override;
 	
 	private:
-		Mass mMass;
-		Coil mCoil;
+		atlas::gl::Shader mShader;
 };
 
 #endif

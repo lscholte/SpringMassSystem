@@ -189,8 +189,13 @@ void Mass::renderGeometry(atlas::math::Matrix4 const &projection, atlas::math::M
 	
 	glm::mat4 modelViewProjection = projection * view * mModel;
 	// glUniformMatrix4fv(mUniforms["ModelViewProjection"], 1, GL_FALSE, &modelViewProjection[0][0]);
-	glUniformMatrix4fv(mShaders[0].getUniformVariable("ModelViewProjection"), 1, GL_FALSE, &modelViewProjection[0][0]);
+
+	const GLint MODEL_VIEW_PROJECTION_UNIFORM_LOCATION = glGetUniformLocation(mShaders[0].getShaderProgram(), "ModelViewProjection");
+    const GLint MODEL_UNIFORM_LOCATION = glGetUniformLocation(mShaders[0].getShaderProgram(), "Model");
 	
+	glUniformMatrix4fv(MODEL_VIEW_PROJECTION_UNIFORM_LOCATION, 1, GL_FALSE, &modelViewProjection[0][0]);
+	glUniformMatrix4fv(MODEL_UNIFORM_LOCATION, 1, GL_FALSE, &mModel[0][0]);
+
 	//If I don't do this, my faces will be inside out
 	//because I specified the cube vertices in clockwise order
 	glFrontFace(GL_CW);

@@ -3,7 +3,8 @@
 #include "Spring.hpp"
 #include <atlas/core/GLFW.hpp>
 
-BlankScene::BlankScene()
+BlankScene::BlankScene() :
+	mGravitationalConstant(9.81)
 {	
 	mGeometries.push_back(std::make_unique<Spring>());	
 }
@@ -14,11 +15,10 @@ BlankScene::~BlankScene()
 
 void BlankScene::renderScene()
 {
-	float theta = 45.0f;
-	float row = 0.0f;
+
 	float aspectRatio = 1.0f;
 	
-	glm::vec3 eye(10.0*cos(glm::radians(theta)), 10.0*sin(glm::radians(theta)), row);
+	glm::vec3 eye(10.0*cos(glm::radians(mTheta)), mRow, 10.0*sin(glm::radians(mTheta)));
 	glm::vec3 look(0.0, 0.0, 0.0);
 	glm::vec3 up(0.0, 1.0, 0.0);
 	
@@ -27,7 +27,7 @@ void BlankScene::renderScene()
 	
 	//Render black background
 	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-	glClear(GL_COLOR_BUFFER_BIT);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	
 	for(auto &geometry : mGeometries)
 	{
@@ -46,3 +46,22 @@ void BlankScene::updateScene(double time)
 		geometry->updateGeometry(mTime);
 	}
 }
+
+void BlankScene::keyPressEvent(int key, int scancode, int action, int mods)
+{
+	switch(key)
+	{
+        case 'R':
+			mTheta += 5.0;
+			break;
+		case 'r':
+			mTheta -= 5.0;
+			break;
+		case 'Z':
+			mRow += 0.1;
+			break;
+		case 'z':
+			mRow -= 0.1;
+			break;
+	}
+}	

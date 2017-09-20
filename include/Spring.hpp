@@ -13,6 +13,9 @@ class Spring : public atlas::utils::Geometry
 	
 		void renderGeometry(atlas::math::Matrix4 const &projection, atlas::math::Matrix4 const &view) override;
 		void updateGeometry(atlas::core::Time<> const &t) override;
+
+		Mass& getMass();
+		Coil& getCoil();
 	
 	private:
 		Mass mMass;

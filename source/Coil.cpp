@@ -3,7 +3,8 @@
 #include <atlas/core/GLFW.hpp>
 
 Coil::Coil() :
-	mSpringConstant(5.0f),
+	mSpringConstant(1.0f),
+	mDampeningConstant(0.0f),
 	mCurrentLength(3.0f)
 {
 	setRestLength(3.0f);
@@ -56,6 +57,16 @@ float Coil::getSpringConstant() const
 	return mSpringConstant;
 }
 
+void Coil::setDampeningConstant(float dampeningConstant)
+{
+	mDampeningConstant = dampeningConstant;
+}
+
+float Coil::getDampeningConstant() const
+{
+	return mDampeningConstant;
+}
+
 void Coil::setCurrentLength(float currentLength)
 {
 	//TODO: Check that lenght > 0
@@ -82,9 +93,9 @@ void Coil::setRestLength(float restLength)
 
 	for(int i = 0; i < mNumVertices; ++i)
 	{
-		mVertexPositions[3*i] = static_cast<GLfloat>(0.5*cos(2*i*PI/(verticesPerUnitLength/coilsPerUnitLength)));
+		mVertexPositions[3*i] = static_cast<GLfloat>(0.48*cos(2*i*PI/(verticesPerUnitLength/coilsPerUnitLength)));
 		mVertexPositions[3*i+1] = (GLfloat) i / verticesPerUnitLength;
-		mVertexPositions[3*i+2] = static_cast<GLfloat>(0.5*sin(2*i*PI/(verticesPerUnitLength/coilsPerUnitLength)));
+		mVertexPositions[3*i+2] = static_cast<GLfloat>(0.48*sin(2*i*PI/(verticesPerUnitLength/coilsPerUnitLength)));
 
 		mVertexColors[3*i] = 0.9f;
 		mVertexColors[3*i+1] = 0.0f;
@@ -97,6 +108,26 @@ void Coil::setRestLength(float restLength)
 float Coil::getRestLength() const
 {
 	return mRestLength;
+}
+
+void Coil::setPosition(glm::vec3 position)
+{
+	mPosition = position;
+}
+
+glm::vec3 Coil::getPosition() const
+{
+	return mPosition;
+}
+
+void Coil::setVelocity(glm::vec3 velocity)
+{
+	mVelocity = velocity;
+}
+
+glm::vec3 Coil::getVelocity() const
+{
+	return mVelocity;
 }
 
 void Coil::setModel(glm::mat4 const &model)

@@ -104,7 +104,10 @@ constexpr GLint Coil::INDICES[][3] = {
 	{3+16, 6+16, 2+16}, //Face 6 -y
 };
 
-Coil::Coil()
+Coil::Coil() :
+	mSpringConstant(1.0f),
+	mRestLength(3.0f),
+	mCurrentLength(3.0f)
 {
 	glGenVertexArrays(1, &mVao);
 	glGenBuffers(1, &mPositionBuffer);
@@ -145,6 +148,32 @@ Coil::Coil()
 
 Coil::~Coil()
 {
+}
+
+void Coil::setSpringConstant(float springConstant)
+{
+	mSpringConstant = springConstant;
+}
+
+float Coil::getSpringConstant() const
+{
+	return mSpringConstant;
+}
+
+void Coil::setCurrentLength(float currentLength)
+{
+	//TODO: Check that lenght > 0
+	mCurrentLength = currentLength;
+}
+
+float Coil::getCurrentLength() const
+{
+	return mCurrentLength;
+}
+
+float Coil::getRestLength() const
+{
+	return mRestLength;
 }
 
 void Coil::renderGeometry(atlas::math::Matrix4 const &projection, atlas::math::Matrix4 const &view)

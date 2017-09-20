@@ -158,6 +158,26 @@ float Mass::getMass() const
 	return mMass;
 }
 
+void Mass::setPosition(glm::vec3 const &position)
+{
+	mPosition = position;
+}
+
+glm::vec3 Mass::getPosition() const
+{
+	return mPosition;
+}
+
+void Mass::setVelocity(glm::vec3 const &velocity)
+{
+	mVelocity = velocity;
+}
+
+glm::vec3 Mass::getVelocity() const
+{
+	return mVelocity;
+}
+
 void Mass::renderGeometry(atlas::math::Matrix4 const &projection, atlas::math::Matrix4 const &view)
 {	
 	mShaders[0].enableShaders();

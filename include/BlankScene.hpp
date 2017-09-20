@@ -10,6 +10,7 @@ class BlankScene : public atlas::utils::Scene
 		~BlankScene();
 	
 		void renderScene() override;
+		void updateScene(double time) override;		
 };
 
 #endif

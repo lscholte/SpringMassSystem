@@ -15,6 +15,8 @@ class Mass : public atlas::utils::Geometry
 		void setMass(float mass);
 		float getMass() const;
 
+		glm::vec3 getRestPosition() const;
+
 		void setPosition(glm::vec3 const &position);
 		glm::vec3 getPosition() const;
 
@@ -27,6 +29,7 @@ class Mass : public atlas::utils::Geometry
 	
 		//Mass of the object in kilograms
 		float mMass;
+		glm::vec3 mRestPosition;
 		glm::vec3 mPosition;
 		glm::vec3 mVelocity;
 	

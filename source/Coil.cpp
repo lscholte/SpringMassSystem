@@ -2,133 +2,26 @@
 #include "Shader.hpp"
 #include <atlas/core/GLFW.hpp>
 
-constexpr GLfloat Coil::POSITIONS[][3] = {
-	{0.5, 0.5, 0.5},
-	{0.5, 0.5, -0.5},
-	{0.5, -0.5, 0.5},
-	{0.5, -0.5, -0.5},
-	{-0.5, 0.5, 0.5},
-	{-0.5, 0.5, -0.5},
-	{-0.5, -0.5, 0.5},
-	{-0.5, -0.5, -0.5},
-	
-	{0.5, 0.5, 0.5},
-	{0.5, 0.5, -0.5},
-	{0.5, -0.5, 0.5},
-	{0.5, -0.5, -0.5},
-	{-0.5, 0.5, 0.5},
-	{-0.5, 0.5, -0.5},
-	{-0.5, -0.5, 0.5},
-	{-0.5, -0.5, -0.5},
-	
-	{0.5, 0.5, 0.5},
-	{0.5, 0.5, -0.5},
-	{0.5, -0.5, 0.5},
-	{0.5, -0.5, -0.5},
-	{-0.5, 0.5, 0.5},
-	{-0.5, 0.5, -0.5},
-	{-0.5, -0.5, 0.5},
-	{-0.5, -0.5, -0.5},
-};
-
-constexpr GLfloat Coil::NORMALS[][3] = {
-	{0.0, 0.0, 1.0},
-	{0.0, 0.0, -1.0},
-	{0.0, 0.0, 1.0},
-	{0.0, 0.0, -1.0},
-	{0.0, 0.0, 1.0},
-	{0.0, 0.0, -1.0},
-	{0.0, 0.0, 1.0},
-	{0.0, 0.0, -1.0},
-	
-	{1.0, 0.0, 0.0},
-	{1.0, 0.0, 0.0},
-	{1.0, 0.0, 0.0},
-	{1.0, 0.0, 0.0},
-	{-1.0, 0.0, 0.0},
-	{-1.0, 0.0, 0.0},
-	{-1.0, 0.0, 0.0},
-	{-1.0, 0.0, 0.0},
-	
-	{0.0, 1.0, 0.0},
-	{0.0, 1.0, 0.0},
-	{0.0, -1.0, 0.0},
-	{0.0, -1.0, 0.0},
-	{0.0, 1.0, 0.0},
-	{0.0, 1.0, 0.0},
-	{0.0, -1.0, 0.0},
-	{0.0, -1.0, 0.0},
-};
-
-constexpr GLfloat Coil::COLORS[][3] = {
-	{0.9, 0.0, 0.0},
-	{0.9, 0.0, 0.0},
-	{0.9, 0.0, 0.0},
-	{0.9, 0.0, 0.0},
-	{0.9, 0.0, 0.0},
-	{0.9, 0.0, 0.0},
-	{0.9, 0.0, 0.0},
-	{0.9, 0.0, 0.0},
-	
-	{0.9, 0.0, 0.0},
-	{0.9, 0.0, 0.0},
-	{0.9, 0.0, 0.0},
-	{0.9, 0.0, 0.0},
-	{0.9, 0.0, 0.0},
-	{0.9, 0.0, 0.0},
-	{0.9, 0.0, 0.0},
-	{0.9, 0.0, 0.0},
-	
-	{0.9, 0.0, 0.0},
-	{0.9, 0.0, 0.0},
-	{0.9, 0.0, 0.0},
-	{0.9, 0.0, 0.0},
-	{0.9, 0.0, 0.0},
-	{0.9, 0.0, 0.0},
-	{0.9, 0.0, 0.0},
-	{0.9, 0.0, 0.0},
-};
-
-constexpr GLint Coil::INDICES[][3] = {
-	{5, 7, 3},
-	{3, 1, 5}, //Face 1 -z
-	{6+8, 7+8, 5+8},
-	{5+8, 4+8, 6+8}, //Face 2 -x
-	{3+8, 2+8, 0+8},
-	{0+8, 1+8, 3+8}, //Face 3 +x
-	{6, 4, 0},
-	{0, 2, 6}, //Face 4 +z
-	{5+16, 1+16, 0+16},
-	{0+16, 4+16, 5+16}, //Face 5 +y
-	{7+16, 6+16, 3+16},
-	{3+16, 6+16, 2+16}, //Face 6 -y
-};
-
 Coil::Coil() :
-	mSpringConstant(1.0f),
-	mRestLength(3.0f),
+	mSpringConstant(5.0f),
 	mCurrentLength(3.0f)
 {
+	setRestLength(3.0f);
+
 	glGenVertexArrays(1, &mVao);
 	glGenBuffers(1, &mPositionBuffer);
-	glGenBuffers(1, &mNormalBuffer);
 	glGenBuffers(1, &mColorBuffer);
 	glGenBuffers(1, &mIndexBuffer);
 	
 	glBindVertexArray(mVao);
 	
 	glBindBuffer(GL_ARRAY_BUFFER, mPositionBuffer);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(Coil::POSITIONS), Coil::POSITIONS, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, 3*mNumVertices*sizeof(GLfloat), mVertexPositions, GL_STATIC_DRAW);
 	glEnableVertexAttribArray(0);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (GLvoid*)0);
 	
-	glBindBuffer(GL_ARRAY_BUFFER, mNormalBuffer);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(Coil::NORMALS), Coil::NORMALS, GL_STATIC_DRAW);
-	glEnableVertexAttribArray(1);
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (GLvoid*)0);
-	
 	glBindBuffer(GL_ARRAY_BUFFER, mColorBuffer);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(Coil::COLORS), Coil::COLORS, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, 3*mNumVertices*sizeof(GLfloat), mVertexColors, GL_STATIC_DRAW);
 	glEnableVertexAttribArray(2);
 	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (GLvoid*)0);
 	
@@ -148,6 +41,9 @@ Coil::Coil() :
 
 Coil::~Coil()
 {
+	delete [] mVertexPositions;
+	delete [] mVertexColors;
+	delete [] mVertexIndices;
 }
 
 void Coil::setSpringConstant(float springConstant)
@@ -171,9 +67,41 @@ float Coil::getCurrentLength() const
 	return mCurrentLength;
 }
 
+void Coil::setRestLength(float restLength)
+{
+	mRestLength = restLength;
+
+	constexpr float PI = 3.14159;	
+	constexpr int verticesPerUnitLength = 100;
+	constexpr float coilsPerUnitLength = 3;
+	
+	mNumVertices = verticesPerUnitLength * restLength;
+	mVertexPositions = new GLfloat[mNumVertices*3];
+	mVertexColors = new GLfloat[mNumVertices*3];
+	mVertexIndices = new GLint[mNumVertices];
+
+	for(int i = 0; i < mNumVertices; ++i)
+	{
+		mVertexPositions[3*i] = static_cast<GLfloat>(0.5*cos(2*i*PI/(verticesPerUnitLength/coilsPerUnitLength)));
+		mVertexPositions[3*i+1] = (GLfloat) i / verticesPerUnitLength;
+		mVertexPositions[3*i+2] = static_cast<GLfloat>(0.5*sin(2*i*PI/(verticesPerUnitLength/coilsPerUnitLength)));
+
+		mVertexColors[3*i] = 0.9f;
+		mVertexColors[3*i+1] = 0.0f;
+		mVertexColors[3*i+2] = 0.0f;
+
+		mVertexIndices[i] = i;
+	}
+}
+
 float Coil::getRestLength() const
 {
 	return mRestLength;
+}
+
+void Coil::setModel(glm::mat4 const &model)
+{
+	mModel = model;
 }
 
 void Coil::renderGeometry(atlas::math::Matrix4 const &projection, atlas::math::Matrix4 const &view)
@@ -181,18 +109,18 @@ void Coil::renderGeometry(atlas::math::Matrix4 const &projection, atlas::math::M
 	mShaders[0].enableShaders();
 	
 	glm::mat4 modelViewProjection = projection * view * mModel;
-	// glUniformMatrix4fv(mUniforms["ModelViewProjection"], 1, GL_FALSE, &modelViewProjection[0][0]);
 	glUniformMatrix4fv(mShaders[0].getUniformVariable("ModelViewProjection"), 1, GL_FALSE, &modelViewProjection[0][0]);
 	
 	//If I don't do this, my faces will be inside out
 	//because I specified the cube vertices in clockwise order
 	glFrontFace(GL_CW);
+	glLineWidth(10.0f);
 	
 	glBindVertexArray(mVao);
 	
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mIndexBuffer);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(Coil::INDICES), Coil::INDICES, GL_STATIC_DRAW);
-	glDrawElements(GL_TRIANGLES, sizeof(Coil::INDICES), GL_UNSIGNED_INT, (void *) 0);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, mNumVertices*sizeof(GLfloat), mVertexIndices, GL_STATIC_DRAW);
+	glDrawElements(GL_LINE_STRIP, mNumVertices, GL_UNSIGNED_INT, (void *) 0);
 
 	glBindVertexArray(0);
 

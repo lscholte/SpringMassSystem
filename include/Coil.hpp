@@ -18,20 +18,28 @@ class Coil : public atlas::utils::Geometry
 		void setCurrentLength(float currentLength);
 		float getCurrentLength() const;
 
+		void setRestLength(float restLength);		
 		float getRestLength() const;
+
+		void setModel(glm::mat4 const &model);
 	
 	private:
 		GLuint mVao;
 		GLuint mPositionBuffer, mNormalBuffer, mColorBuffer, mIndexBuffer;
 
 		float mSpringConstant;
-		const float mRestLength;
+		float mRestLength;
 		float mCurrentLength;
 	
-		static const GLfloat POSITIONS[][3];
-		static const GLfloat NORMALS[][3];
-		static const GLfloat COLORS[][3];
-		static const GLint INDICES[][3];
+		GLfloat *mVertexPositions;
+		GLfloat *mVertexColors;
+		GLint *mVertexIndices;
+		int mNumVertices;
+
+		// static const GLfloat POSITIONS[][3];
+		// static const GLfloat NORMALS[][3];
+		// static const GLfloat COLORS[][3];
+		// static const GLint INDICES[][1];
 };
 
 #endif

@@ -158,6 +158,11 @@ float Mass::getMass() const
 	return mMass;
 }
 
+glm::vec3 Mass::getRestPosition() const
+{
+	return mRestPosition;
+}
+
 void Mass::setPosition(glm::vec3 const &position)
 {
 	mPosition = position;
@@ -194,7 +199,7 @@ void Mass::renderGeometry(atlas::math::Matrix4 const &projection, atlas::math::M
 	
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mIndexBuffer);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(Mass::INDICES), Mass::INDICES, GL_STATIC_DRAW);
-	glDrawElements(GL_TRIANGLES, sizeof(Mass::INDICES), GL_UNSIGNED_INT, (void *) 0);
+	glDrawElements(GL_TRIANGLES, sizeof(Mass::INDICES)/sizeof(GLint)*3, GL_UNSIGNED_INT, (void *) 0);
 
 	glBindVertexArray(0);
 

@@ -15,10 +15,10 @@ BlankScene::~BlankScene()
 void BlankScene::renderScene()
 {
 	float theta = 45.0f;
-	float row = 3.0f;
+	float row = 0.0f;
 	float aspectRatio = 1.0f;
 	
-	glm::vec3 eye(50.0*cos(glm::radians(theta)), 50.0*sin(glm::radians(theta)), row);
+	glm::vec3 eye(10.0*cos(glm::radians(theta)), 10.0*sin(glm::radians(theta)), row);
 	glm::vec3 look(0.0, 0.0, 0.0);
 	glm::vec3 up(0.0, 1.0, 0.0);
 	

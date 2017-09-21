@@ -6,7 +6,14 @@
 BlankScene::BlankScene() :
 	mGravitationalConstant(9.81)
 {	
-	mGeometries.push_back(std::make_unique<Spring>());	
+	std::unique_ptr<Spring> spring = std::make_unique<Spring>();
+	spring->getCoil().setSpringConstant(3.0f);
+	spring->getCoil().setDampeningConstant(2.0f);
+	spring->getCoil().setRestLength(3.0f);
+	spring->getMass().setPosition(glm::vec3(3.0f, 0.0f, 0.0f));
+	spring->getMass().setVelocity(glm::vec3(0.0f, 0.0f, 0.0f));	
+	spring->getMass().setMass(1.0f);
+	mGeometries.push_back(std::move(spring));	
 }
 
 BlankScene::~BlankScene()

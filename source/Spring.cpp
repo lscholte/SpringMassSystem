@@ -1,9 +1,8 @@
 #include "Spring.hpp"
+#include <iostream>
 
 Spring::Spring()
 {
-	mCoil.transformGeometry(glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.5f, 0.0f)));
-	mCoil.setPosition(glm::vec3(0.0f, 0.5f, 0.0f));
 }
 
 Spring::~Spring()
@@ -28,40 +27,53 @@ void Spring::renderGeometry(atlas::math::Matrix4 const &projection, atlas::math:
 
 void Spring::updateGeometry(atlas::core::Time<> const &t)
 {
-	//Resets the coil model matrix so that we can re-apply scaling and translations to it
+	//Resets the model matrices so that we can re-apply scaling and/or translations to them
 	mCoil.setModel(glm::mat4(1.0f));
+	mMass.setModel(glm::mat4(1.0f));
 
-	float g = 9.81;
+	const float g = 9.81;
+
+	//Compute the coil length and the axis in which it lies
+	const float length = glm::length(mCoil.getFixedPosition() - mMass.getPosition());
+	const glm::vec3 coilAxis = glm::normalize(mCoil.getFixedPosition() - mMass.getPosition());
 
 	//Compute the two forces acting upon the spring
 	const glm::vec3 forceGravity(0, -mMass.getMass()*g, 0);
-	const glm::vec3 forceSpring(
-		0,
-		mCoil.getSpringConstant()*(mCoil.getCurrentLength() - mCoil.getRestLength()) - mCoil.getDampeningConstant()*mCoil.getVelocity().y,
-		0
-	);
+	const glm::vec3 forceSpring = mCoil.getSpringConstant() * coilAxis * (length - mCoil.getRestLength());
+	const glm::vec3 dampeningForce = -mCoil.getDampeningConstant() * mMass.getVelocity();
 
-	//Determine the new position of the mass
-	const glm::vec3 acceleration = (forceGravity + forceSpring) / mMass.getMass();
-	const glm::vec3 velocity = mMass.getVelocity() + acceleration*t.deltaTime;
-	const glm::vec3 position = mMass.getPosition() + velocity*t.deltaTime;
+	//Sum up the forces to obtain the net force
+	const glm::vec3 netForce = forceGravity + forceSpring + dampeningForce;
 
-	//Determine the change in position of the mass since the previous timestep
-	//and translate the mass by that amount
-	const glm::vec3 deltaPosition = position - mMass.getPosition();
-	mMass.transformGeometry(glm::translate(glm::mat4(1.0f), deltaPosition));
+	//Compute the acceleration of the mass using the net force
+	const glm::vec3 acceleration = netForce / mMass.getMass();	
+
+	//Compute the new position and velocity of the mass
+	const glm::vec3 newPosition = mMass.getPosition() + mMass.getVelocity()*t.deltaTime;
+	const glm::vec3 newVelocity = mMass.getVelocity() + acceleration*t.deltaTime;
+
+	//Translate the mass to its new position
+	mMass.transformGeometry(glm::translate(glm::mat4(1.0f), newPosition));
+
+	//Compute the new length of the coil
+	float newLength = glm::length(mCoil.getFixedPosition() - newPosition);
+
+	//Scale the coil to its new length
+	mCoil.transformGeometry(glm::scale(glm::mat4(1.0f), glm::vec3(1.0, newLength/mCoil.getRestLength(), 1.0)));
+
+	//Rotate the coil so that it is aligned with the mass
+	const glm::vec3 newCoilAxis = glm::normalize(mCoil.getFixedPosition() - mMass.getPosition());	
+	glm::vec3 w = glm::cross(glm::vec3(0.0f, 1.0f, 0.0f), newCoilAxis);
+	float theta = acos(glm::dot(glm::vec3(0.0f, 1.0f, 0.0f), newCoilAxis));
+	mCoil.transformGeometry(glm::rotate(glm::mat4(1.0f), theta, w));
 
 	//Update the mass's velocity and position states
-	mMass.setVelocity(velocity);
-	mMass.setPosition(position);
+	mMass.setVelocity(newVelocity);
+	mMass.setPosition(newPosition);
+}
 
-	mCoil.setCurrentLength(mCoil.getCurrentLength() - deltaPosition.y);
-
-	// mModel = glm::mat4(1.0f);
-	const glm::vec3 coilNewPosition = mCoil.getPosition() + deltaPosition;
-	mCoil.transformGeometry(glm::scale(glm::mat4(1.0f), glm::vec3(1.0, mCoil.getCurrentLength()/mCoil.getRestLength(), 1.0)));
-	mCoil.transformGeometry(glm::translate(glm::mat4(1.0f), coilNewPosition));
-	
-	mCoil.setPosition(coilNewPosition);
-	mCoil.setVelocity(velocity);	
+void Spring::transformGeometry(atlas::math::Matrix4 const& t)
+{
+	mCoil.transformGeometry(t);
+	mMass.transformGeometry(t);	
 }

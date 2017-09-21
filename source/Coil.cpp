@@ -4,29 +4,9 @@
 
 Coil::Coil() :
 	mSpringConstant(1.0f),
-	mDampeningConstant(0.0f),
-	mCurrentLength(3.0f)
+	mDampeningConstant(0.0f)
 {
-	setRestLength(3.0f);
-
-	glGenVertexArrays(1, &mVao);
-	glGenBuffers(1, &mPositionBuffer);
-	glGenBuffers(1, &mColorBuffer);
-	glGenBuffers(1, &mIndexBuffer);
-	
-	glBindVertexArray(mVao);
-	
-	glBindBuffer(GL_ARRAY_BUFFER, mPositionBuffer);
-	glBufferData(GL_ARRAY_BUFFER, 3*mNumVertices*sizeof(GLfloat), mVertexPositions, GL_STATIC_DRAW);
-	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (GLvoid*)0);
-	
-	glBindBuffer(GL_ARRAY_BUFFER, mColorBuffer);
-	glBufferData(GL_ARRAY_BUFFER, 3*mNumVertices*sizeof(GLfloat), mVertexColors, GL_STATIC_DRAW);
-	glEnableVertexAttribArray(2);
-	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (GLvoid*)0);
-	
-	glBindVertexArray(0);
+	setRestLength(1.0f);
 
 	std::vector<atlas::gl::ShaderUnit> shaderUnits
 	{
@@ -67,17 +47,6 @@ float Coil::getDampeningConstant() const
 	return mDampeningConstant;
 }
 
-void Coil::setCurrentLength(float currentLength)
-{
-	//TODO: Check that lenght > 0
-	mCurrentLength = currentLength;
-}
-
-float Coil::getCurrentLength() const
-{
-	return mCurrentLength;
-}
-
 void Coil::setRestLength(float restLength)
 {
 	mRestLength = restLength;
@@ -94,7 +63,7 @@ void Coil::setRestLength(float restLength)
 	for(int i = 0; i < mNumVertices; ++i)
 	{
 		mVertexPositions[3*i] = static_cast<GLfloat>(0.48*cos(2*i*PI/(verticesPerUnitLength/coilsPerUnitLength)));
-		mVertexPositions[3*i+1] = (GLfloat) i / verticesPerUnitLength;
+		mVertexPositions[3*i+1] = (GLfloat) -i / verticesPerUnitLength;
 		mVertexPositions[3*i+2] = static_cast<GLfloat>(0.48*sin(2*i*PI/(verticesPerUnitLength/coilsPerUnitLength)));
 
 		mVertexColors[3*i] = 0.9f;
@@ -103,6 +72,25 @@ void Coil::setRestLength(float restLength)
 
 		mVertexIndices[i] = i;
 	}
+
+	glGenVertexArrays(1, &mVao);
+	glGenBuffers(1, &mPositionBuffer);
+	glGenBuffers(1, &mColorBuffer);
+	glGenBuffers(1, &mIndexBuffer);
+	
+	glBindVertexArray(mVao);
+	
+	glBindBuffer(GL_ARRAY_BUFFER, mPositionBuffer);
+	glBufferData(GL_ARRAY_BUFFER, 3*mNumVertices*sizeof(GLfloat), mVertexPositions, GL_STATIC_DRAW);
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (GLvoid*)0);
+	
+	glBindBuffer(GL_ARRAY_BUFFER, mColorBuffer);
+	glBufferData(GL_ARRAY_BUFFER, 3*mNumVertices*sizeof(GLfloat), mVertexColors, GL_STATIC_DRAW);
+	glEnableVertexAttribArray(2);
+	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (GLvoid*)0);
+	
+	glBindVertexArray(0);
 }
 
 float Coil::getRestLength() const
@@ -110,24 +98,9 @@ float Coil::getRestLength() const
 	return mRestLength;
 }
 
-void Coil::setPosition(glm::vec3 position)
+glm::vec3 Coil::getFixedPosition() const
 {
-	mPosition = position;
-}
-
-glm::vec3 Coil::getPosition() const
-{
-	return mPosition;
-}
-
-void Coil::setVelocity(glm::vec3 velocity)
-{
-	mVelocity = velocity;
-}
-
-glm::vec3 Coil::getVelocity() const
-{
-	return mVelocity;
+	return mFixedPosition;
 }
 
 void Coil::setModel(glm::mat4 const &model)

@@ -214,3 +214,8 @@ void Mass::renderGeometry(atlas::math::Matrix4 const &projection, atlas::math::M
 void Mass::updateGeometry(atlas::core::Time<> const &t)
 {
 }
+
+void Mass::setModel(glm::mat4 const &model)
+{
+	mModel = model;
+}

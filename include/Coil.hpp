@@ -18,17 +18,12 @@ class Coil : public atlas::utils::Geometry
 		void setDampeningConstant(float dampeningConstant);
 		float getDampeningConstant() const;
 
-		void setCurrentLength(float currentLength);
 		float getCurrentLength() const;
 
 		void setRestLength(float restLength);		
 		float getRestLength() const;
 
-		void setPosition(glm::vec3 position);
-		glm::vec3 getPosition() const;
-
-		void setVelocity(glm::vec3 velocity);
-		glm::vec3 getVelocity() const;
+		glm::vec3 getFixedPosition() const;
 
 		void setModel(glm::mat4 const &model);
 	
@@ -36,17 +31,15 @@ class Coil : public atlas::utils::Geometry
 		GLuint mVao;
 		GLuint mPositionBuffer, mNormalBuffer, mColorBuffer, mIndexBuffer;
 
-		float mSpringConstant;
-		float mDampeningConstant;
-		float mRestLength;
-		float mCurrentLength;
-		glm::vec3 mPosition;
-		glm::vec3 mVelocity;
-	
 		GLfloat *mVertexPositions;
 		GLfloat *mVertexColors;
 		GLint *mVertexIndices;
 		int mNumVertices;
+
+		float mSpringConstant;
+		float mDampeningConstant;
+		float mRestLength;
+		glm::vec3 mFixedPosition;
 };
 
 #endif

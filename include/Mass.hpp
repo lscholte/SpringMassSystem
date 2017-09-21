@@ -22,6 +22,8 @@ class Mass : public atlas::utils::Geometry
 
 		void setVelocity(glm::vec3 const &velocity);
 		glm::vec3 getVelocity() const;
+
+		void setModel(glm::mat4 const &model);		
 	
 	private:
 		GLuint mVao;

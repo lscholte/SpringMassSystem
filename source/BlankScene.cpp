@@ -59,7 +59,7 @@ void BlankScene::renderScene()
 	
 	float aspectRatio = 1.0f;
 	
-	glm::vec3 eye(10.0*cos(glm::radians(mTheta)), mRow, 10.0*sin(glm::radians(mTheta)));
+	glm::vec3 eye(0.0, 0.0, 10.0);
 	glm::vec3 look(0.0, 0.0, 0.0);
 	glm::vec3 up(0.0, 1.0, 0.0);
 	

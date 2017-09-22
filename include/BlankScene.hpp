@@ -19,8 +19,6 @@ class BlankScene : public atlas::utils::Scene
 		void screenResizeEvent(int width, int height) override;		
 		
 	private:
-		float mTheta = 45.0f;
-		float mRow = 0.0f;
 		glm::mat4 mProjection;
 		float mWidth, mHeight;
 };

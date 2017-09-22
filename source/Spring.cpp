@@ -53,6 +53,18 @@ void Spring::updateGeometry(atlas::core::Time<> const &t)
 	const glm::vec3 newPosition = mMass.getPosition() + mMass.getVelocity()*t.deltaTime;
 	const glm::vec3 newVelocity = mMass.getVelocity() + acceleration*t.deltaTime;
 
+	//Compute a vector and angle to use for rotation.
+	//First find the axis in which the should be aligned.
+	//Then find a perpendicular vector to that axis.
+	//Then compute the angle of rotation, which is the angle
+	//between the coil's default axis and the axis in which it should be aligned.
+	const glm::vec3 newCoilAxis = glm::normalize(mCoil.getFixedPosition() - mMass.getPosition());	
+	glm::vec3 w = glm::cross(glm::vec3(0.0f, 1.0f, 0.0f), newCoilAxis);
+	float theta = acos(glm::dot(glm::vec3(0.0f, 1.0f, 0.0f), newCoilAxis));
+
+	//Rotate the mass so that the same point is always connected to the spring
+	mMass.transformGeometry(glm::rotate(glm::mat4(1.0f), theta, w));
+
 	//Translate the mass to its new position
 	mMass.transformGeometry(glm::translate(glm::mat4(1.0f), newPosition));
 
@@ -63,9 +75,9 @@ void Spring::updateGeometry(atlas::core::Time<> const &t)
 	mCoil.transformGeometry(glm::scale(glm::mat4(1.0f), glm::vec3(1.0, newLength/mCoil.getRestLength(), 1.0)));
 
 	//Rotate the coil so that it is aligned with the mass
-	const glm::vec3 newCoilAxis = glm::normalize(mCoil.getFixedPosition() - mMass.getPosition());	
-	glm::vec3 w = glm::cross(glm::vec3(0.0f, 1.0f, 0.0f), newCoilAxis);
-	float theta = acos(glm::dot(glm::vec3(0.0f, 1.0f, 0.0f), newCoilAxis));
+	// const glm::vec3 newCoilAxis = glm::normalize(mCoil.getFixedPosition() - mMass.getPosition());	
+	// glm::vec3 w = glm::cross(glm::vec3(0.0f, 1.0f, 0.0f), newCoilAxis);
+	// float theta = acos(glm::dot(glm::vec3(0.0f, 1.0f, 0.0f), newCoilAxis));
 	mCoil.transformGeometry(glm::rotate(glm::mat4(1.0f), theta, w));
 
 	//Update the mass's velocity and position states

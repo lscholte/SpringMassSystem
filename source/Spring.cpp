@@ -1,5 +1,6 @@
 #include "Spring.hpp"
 #include <iostream>
+#include <atlas/utils/GUI.hpp>
 
 Spring::Spring()
 {
@@ -27,11 +28,11 @@ void Spring::renderGeometry(atlas::math::Matrix4 const &projection, atlas::math:
 
 void Spring::updateGeometry(atlas::core::Time<> const &t)
 {
+	float g = 9.81;
+	
 	//Resets the model matrices so that we can re-apply scaling and/or translations to them
 	mCoil.setModel(glm::mat4(1.0f));
 	mMass.setModel(glm::mat4(1.0f));
-
-	const float g = 9.81;
 
 	//Compute the coil length and the axis in which it lies
 	const float length = glm::length(mCoil.getFixedPosition() - mMass.getPosition());
@@ -70,6 +71,23 @@ void Spring::updateGeometry(atlas::core::Time<> const &t)
 	//Update the mass's velocity and position states
 	mMass.setVelocity(newVelocity);
 	mMass.setPosition(newPosition);
+}
+
+void Spring::drawGui()
+{
+	float ks = mCoil.getSpringConstant();
+	float kd = mCoil.getDampeningConstant();
+	float length = glm::length(mCoil.getFixedPosition() - mMass.getPosition());
+	
+	ImGui::SetNextWindowSize(ImVec2(300, 100), ImGuiSetCond_FirstUseEver);
+	
+	ImGui::Begin("Spring Options");
+	ImGui::SliderFloat("Spring Constant", &ks, 0.0f, 50.0f);
+	ImGui::SliderFloat("Dampening Constant", &kd, 0.0f, 50.0f);
+	ImGui::End();
+
+	mCoil.setSpringConstant(ks);
+	mCoil.setDampeningConstant(kd);
 }
 
 void Spring::transformGeometry(atlas::math::Matrix4 const& t)

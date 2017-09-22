@@ -2,6 +2,8 @@ cmake_minimum_required(VERSION 3.0 FATAL_ERROR)
 
 project(SpringMassSystem LANGUAGES CXX)
 
+set(CMAKE_CXX_STANDARD 14)
+
 set(ATLAS_DIR "${PROJECT_SOURCE_DIR}/lib/atlas")
 set(ATLAS_CONFIG_DIR "${ATLAS_DIR}/config")
 set(INCLUDE_DIR "${PROJECT_SOURCE_DIR}/include")
@@ -11,7 +13,7 @@ set(SHADER_DIR "${PROJECT_SOURCE_DIR}/shaders")
 # Sets a path to code that will be automatically generated
 set(GENERATED_DIR "${PROJECT_SOURCE_DIR}/generated")
 
-include("${ATLAS_CONFIG_DIR}/Compiler.cmake")
+#include("${ATLAS_CONFIG_DIR}/Compiler.cmake")
 
 add_subdirectory(${ATLAS_DIR})
 add_subdirectory(${INCLUDE_DIR})

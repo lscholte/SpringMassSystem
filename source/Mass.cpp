@@ -183,6 +183,16 @@ glm::vec3 Mass::getVelocity() const
 	return mVelocity;
 }
 
+void Mass::setAcceleration(glm::vec3 const &acceleration)
+{
+	mAcceleration = acceleration;
+}
+
+glm::vec3 Mass::getAcceleration() const
+{
+	return mAcceleration;
+}
+
 void Mass::renderGeometry(atlas::math::Matrix4 const &projection, atlas::math::Matrix4 const &view)
 {	
 	mShaders[0].enableShaders();

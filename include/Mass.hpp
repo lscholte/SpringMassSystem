@@ -23,6 +23,9 @@ class Mass : public atlas::utils::Geometry
 		void setVelocity(glm::vec3 const &velocity);
 		glm::vec3 getVelocity() const;
 
+		void setAcceleration(glm::vec3 const &acceleration);
+		glm::vec3 getAcceleration() const;
+
 		void setModel(glm::mat4 const &model);		
 	
 	private:
@@ -34,6 +37,7 @@ class Mass : public atlas::utils::Geometry
 		glm::vec3 mRestPosition;
 		glm::vec3 mPosition;
 		glm::vec3 mVelocity;
+		glm::vec3 mAcceleration;
 	
 		static const GLfloat POSITIONS[][3];
 		static const GLfloat NORMALS[][3];

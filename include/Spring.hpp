@@ -22,6 +22,10 @@ class Spring : public atlas::utils::Geometry
 	private:
 		Mass mMass;
 		Coil mCoil;
+
+		glm::vec3 computeVelocity(float deltaTime);
+		glm::vec3 computeAcceleration(float deltaTime, glm::vec3 const &velocity);		
+		glm::vec3 computeAcceleration(glm::vec3 const &position, glm::vec3 const &velocity);
 };
 
 #endif

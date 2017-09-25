@@ -18,6 +18,8 @@ class Spring : public atlas::utils::Geometry
 
 		Mass& getMass();
 		Coil& getCoil();
+
+		void applyTransformations();
 	
 	private:
 		Mass mMass;

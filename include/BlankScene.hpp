@@ -21,6 +21,8 @@ class BlankScene : public atlas::utils::Scene
 	private:
 		glm::mat4 mProjection;
 		float mWidth, mHeight;
+
+		bool mPaused;
 };
 
 #endif

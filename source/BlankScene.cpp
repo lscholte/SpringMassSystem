@@ -4,7 +4,8 @@
 #include <atlas/core/GLFW.hpp>
 #include <atlas/utils/GUI.hpp>
 
-BlankScene::BlankScene()
+BlankScene::BlankScene() :
+	mPaused(true)
 {	
 	std::unique_ptr<Spring> spring = std::make_unique<Spring>();
 	spring->getCoil().setSpringConstant(3.0f);
@@ -13,6 +14,7 @@ BlankScene::BlankScene()
 	spring->getMass().setPosition(glm::vec3(3.0f, 0.0f, 0.0f));
 	spring->getMass().setVelocity(glm::vec3(0.0f, 0.0f, 0.0f));	
 	spring->getMass().setMass(1.0f);
+	spring->applyTransformations();
 	mGeometries.push_back(std::move(spring));	
 }
 
@@ -68,6 +70,12 @@ void BlankScene::renderScene()
 	//Render black background
 	glClearColor(0.7f, 0.7f, 0.7f, 0.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+	ImGui::SetNextWindowPos(ImVec2(0, 0), ImGuiSetCond_FirstUseEver);
+	
+	ImGui::Begin("Scene Options");
+	ImGui::Checkbox("Simulation Paused", &mPaused);
+	ImGui::End();
 			
 	for(auto &geometry : mGeometries)
 	{
@@ -86,8 +94,11 @@ void BlankScene::updateScene(double time)
 
 	atlas::utils::Gui::getInstance().update(mTime);
 	
-	for(auto &geometry : mGeometries)
+	if(!mPaused)
 	{
-		geometry->updateGeometry(mTime);
+		for(auto &geometry : mGeometries)
+		{
+			geometry->updateGeometry(mTime);
+		}
 	}
 }	

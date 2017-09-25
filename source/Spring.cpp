@@ -56,6 +56,11 @@ void Spring::updateGeometry(atlas::core::Time<> const &t)
 	mMass.setPosition(newPosition);
 	mMass.setVelocity(newVelocity);
 
+	this->applyTransformations();
+}
+
+void Spring::applyTransformations()
+{
 	//Resets the model matrices so that we can re-apply scaling and/or translations to them
 	mCoil.setModel(glm::mat4(1.0f));
 	mMass.setModel(glm::mat4(1.0f));

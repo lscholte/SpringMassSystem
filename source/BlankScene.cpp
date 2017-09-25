@@ -7,15 +7,32 @@
 BlankScene::BlankScene() :
 	mPaused(true)
 {	
-	std::unique_ptr<Spring> spring = std::make_unique<Spring>();
-	spring->getCoil().setSpringConstant(3.0f);
-	spring->getCoil().setDampeningConstant(0.0f);
-	spring->getCoil().setRestLength(3.0f);
-	spring->getMass().setPosition(glm::vec3(3.0f, 0.0f, 0.0f));
-	spring->getMass().setVelocity(glm::vec3(0.0f, 0.0f, 0.0f));	
-	spring->getMass().setMass(1.0f);
-	spring->applyTransformations();
-	mGeometries.push_back(std::move(spring));	
+	std::unique_ptr<Spring> springRK4 = std::make_unique<Spring>();
+	springRK4->setName("RK4 Spring");
+	springRK4->useRK4(true);
+	springRK4->getCoil().setSpringConstant(3.0f);
+	springRK4->getCoil().setDampeningConstant(0.0f);
+	springRK4->getCoil().setRestLength(3.0f);
+	springRK4->getCoil().setFixedPosition(glm::vec3(-5.0f, 0.0f, 0.0f));	
+	springRK4->getMass().setPosition(glm::vec3(-2.0f, 0.0f, 0.0f));
+	springRK4->getMass().setVelocity(glm::vec3(0.0f, 0.0f, 0.0f));
+	springRK4->getMass().setMass(1.0f);
+	springRK4->applyTransformations();
+
+	std::unique_ptr<Spring> springEuler = std::make_unique<Spring>();
+	springEuler->setName("Euler Spring");
+	springEuler->useRK4(false);
+	springEuler->getCoil().setSpringConstant(3.0f);
+	springEuler->getCoil().setDampeningConstant(0.0f);
+	springEuler->getCoil().setRestLength(3.0f);
+	springEuler->getCoil().setFixedPosition(glm::vec3(5.0f, 0.0f, 0.0f));		
+	springEuler->getMass().setPosition(glm::vec3(2.0f, 0.0f, 0.0f));
+	springEuler->getMass().setVelocity(glm::vec3(0.0f, 0.0f, 0.0f));	
+	springEuler->getMass().setMass(1.0f);
+	springEuler->applyTransformations();
+
+	mGeometries.push_back(std::move(springRK4));	
+	mGeometries.push_back(std::move(springEuler));		
 }
 
 BlankScene::~BlankScene()

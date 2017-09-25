@@ -20,10 +20,16 @@ class Spring : public atlas::utils::Geometry
 		Coil& getCoil();
 
 		void applyTransformations();
+
+		void useRK4(bool use);
+		void setName(std::string name);
 	
 	private:
 		Mass mMass;
 		Coil mCoil;
+
+		bool mUseRK4;
+		std::string mName;
 
 		glm::vec3 computeVelocity(float deltaTime);
 		glm::vec3 computeAcceleration(float deltaTime, glm::vec3 const &velocity);		

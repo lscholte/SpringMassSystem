@@ -23,6 +23,7 @@ class Coil : public atlas::utils::Geometry
 		void setRestLength(float restLength);		
 		float getRestLength() const;
 
+		void setFixedPosition(glm::vec3 const &position);
 		glm::vec3 getFixedPosition() const;
 
 		void setModel(glm::mat4 const &model);

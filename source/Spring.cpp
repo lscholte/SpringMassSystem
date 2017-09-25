@@ -20,6 +20,16 @@ Coil& Spring::getCoil()
 	return mCoil;
 }
 
+void Spring::useRK4(bool use)
+{
+	mUseRK4 = use;
+}
+
+void Spring::setName(std::string name)
+{
+	mName = name;
+}
+
 void Spring::renderGeometry(atlas::math::Matrix4 const &projection, atlas::math::Matrix4 const &view)
 {
 	mMass.renderGeometry(projection, view);
@@ -28,29 +38,36 @@ void Spring::renderGeometry(atlas::math::Matrix4 const &projection, atlas::math:
 
 void Spring::updateGeometry(atlas::core::Time<> const &t)
 {	
-	//Compute the new position by Runge-Kutta Order 4.
-	//based on https://www.intmath.com/differential-equations/12-runge-kutta-rk4-des.php
-	glm::vec3 v1 = t.deltaTime * computeVelocity(0);
-	glm::vec3 v2 = t.deltaTime * computeVelocity(0.5*t.deltaTime);
-	glm::vec3 v3 = t.deltaTime * computeVelocity(0.5*t.deltaTime);
-	glm::vec3 v4 = t.deltaTime * computeVelocity(t.deltaTime);
-	glm::vec3 newPosition = mMass.getPosition() + (1.0f / 6.0f) * (v1 + 2.0f*v2 + 2.0f*v3 + v4);
+	glm::vec3 newPosition;
+	glm::vec3 newVelocity;
+	if(mUseRK4)
+	{
+		//Compute the new position by Runge-Kutta Order 4.
+		//based on https://www.intmath.com/differential-equations/12-runge-kutta-rk4-des.php
+		glm::vec3 v1 = t.deltaTime * computeVelocity(0);
+		glm::vec3 v2 = t.deltaTime * computeVelocity(0.5*t.deltaTime);
+		glm::vec3 v3 = t.deltaTime * computeVelocity(0.5*t.deltaTime);
+		glm::vec3 v4 = t.deltaTime * computeVelocity(t.deltaTime);
+		newPosition = mMass.getPosition() + (1.0f / 6.0f) * (v1 + 2.0f*v2 + 2.0f*v3 + v4);
 
-	//Compute the new velocity by Runge-Kutta Order 4
-	//based on https://www.intmath.com/differential-equations/12-runge-kutta-rk4-des.php
-	glm::vec3 a1 = t.deltaTime * computeAcceleration(0, mMass.getVelocity());
-	glm::vec3 a2 = t.deltaTime * computeAcceleration(0.5*t.deltaTime, mMass.getVelocity() + 0.5f*a1);
-	glm::vec3 a3 = t.deltaTime * computeAcceleration(0.5*t.deltaTime, mMass.getVelocity() + 0.5f*a2);
-	glm::vec3 a4 = t.deltaTime * computeAcceleration(t.deltaTime, mMass.getVelocity() + a3);
-	glm::vec3 newVelocity = mMass.getVelocity() + (1.0f / 6.0f) * (a1 + 2.0f*a2 + 2.0f*a3 + a4);
+		//Compute the new velocity by Runge-Kutta Order 4
+		//based on https://www.intmath.com/differential-equations/12-runge-kutta-rk4-des.php
+		glm::vec3 a1 = t.deltaTime * computeAcceleration(0, mMass.getVelocity());
+		glm::vec3 a2 = t.deltaTime * computeAcceleration(0.5*t.deltaTime, mMass.getVelocity() + 0.5f*a1);
+		glm::vec3 a3 = t.deltaTime * computeAcceleration(0.5*t.deltaTime, mMass.getVelocity() + 0.5f*a2);
+		glm::vec3 a4 = t.deltaTime * computeAcceleration(t.deltaTime, mMass.getVelocity() + a3);
+		newVelocity = mMass.getVelocity() + (1.0f / 6.0f) * (a1 + 2.0f*a2 + 2.0f*a3 + a4);
 
-	//Update acceleration so that we use it to compute velocity
-	//next the next time we execute Runge-Kutta
-	mMass.setAcceleration((newVelocity - mMass.getVelocity()) / t.deltaTime);
-
-	//Compute new position and velocity by Euler integration
-	// const glm::vec3 newPosition = mMass.getPosition() + mMass.getVelocity()*t.deltaTime;
-	// const glm::vec3 newVelocity = mMass.getVelocity() + computeAcceleration(mMass.getPosition(), mMass.getVelocity())*t.deltaTime;
+		//Update acceleration so that we use it to compute velocity
+		//next the next time we execute Runge-Kutta
+		mMass.setAcceleration((newVelocity - mMass.getVelocity()) / t.deltaTime);
+	}
+	else
+	{
+		//Compute new position and velocity by Euler integration
+		newPosition = mMass.getPosition() + mMass.getVelocity()*t.deltaTime;
+		newVelocity = mMass.getVelocity() + computeAcceleration(mMass.getPosition(), mMass.getVelocity())*t.deltaTime;
+	}
 
 	//Update the mass's velocity and position states
 	mMass.setPosition(newPosition);
@@ -98,6 +115,9 @@ void Spring::applyTransformations()
 			this->transformGeometry(glm::rotate(glm::mat4(1.0f), theta, w));
 		}
 	}
+
+	//Move the spring to its correct location
+	this->transformGeometry(glm::translate(glm::mat4(1.0f), mCoil.getFixedPosition()));
 }
 
 glm::vec3 Spring::computeVelocity(float deltaTime)
@@ -146,7 +166,7 @@ void Spring::drawGui()
 	
 	ImGui::SetNextWindowSize(ImVec2(300, 100), ImGuiSetCond_FirstUseEver);
 	
-	ImGui::Begin("Spring Options");
+	ImGui::Begin((mName + " Options").c_str());
 	ImGui::SliderFloat("Spring Constant", &ks, 0.0f, 50.0f);
 	ImGui::SliderFloat("Dampening Constant", &kd, 0.0f, 50.0f);
 	ImGui::End();

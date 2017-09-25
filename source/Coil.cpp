@@ -98,6 +98,11 @@ float Coil::getRestLength() const
 	return mRestLength;
 }
 
+void Coil::setFixedPosition(glm::vec3 const &position)
+{
+	mFixedPosition = position;
+}
+
 glm::vec3 Coil::getFixedPosition() const
 {
 	return mFixedPosition;

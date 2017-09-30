@@ -1,38 +1,55 @@
 #include "BlankScene.hpp"
 #include "Shader.hpp"
 #include "Spring.hpp"
+#include "AngularSpring.hpp"
 #include <atlas/core/GLFW.hpp>
 #include <atlas/utils/GUI.hpp>
+#include "Cloth.hpp"
 
 BlankScene::BlankScene() :
 	mPaused(true)
 {	
-	std::unique_ptr<Spring> springRK4 = std::make_unique<Spring>();
-	springRK4->setName("RK4 Spring");
-	springRK4->useRK4(true);
-	springRK4->getCoil().setSpringConstant(3.0f);
-	springRK4->getCoil().setDampeningConstant(0.0f);
-	springRK4->getCoil().setRestLength(3.0f);
-	springRK4->getCoil().setFixedPosition(glm::vec3(-5.0f, 0.0f, 0.0f));	
-	springRK4->getMass().setPosition(glm::vec3(-2.0f, 0.0f, 0.0f));
-	springRK4->getMass().setVelocity(glm::vec3(0.0f, 0.0f, 0.0f));
-	springRK4->getMass().setMass(1.0f);
-	springRK4->applyTransformations();
+	// std::unique_ptr<Spring> springRK4 = std::make_unique<Spring>();
+	// springRK4->setName("Linear Spring");
+	// springRK4->useRK4(true);
+	// springRK4->getCoil().setSpringConstant(3.0f);
+	// springRK4->getCoil().setDampeningConstant(0.0f);
+	// springRK4->getCoil().setRestLength(3.0f);
+	// springRK4->getCoil().setFixedPosition(glm::vec3(-5.0f, 0.0f, 0.0f));	
+	// springRK4->getMass().setPosition(glm::vec3(-2.0f, 0.0f, 0.0f));
+	// springRK4->getMass().setVelocity(glm::vec3(0.0f, 0.0f, 0.0f));
+	// springRK4->getMass().setMass(1.0f);
+	// springRK4->applyTransformations();
 
-	std::unique_ptr<Spring> springEuler = std::make_unique<Spring>();
-	springEuler->setName("Euler Spring");
-	springEuler->useRK4(false);
-	springEuler->getCoil().setSpringConstant(3.0f);
-	springEuler->getCoil().setDampeningConstant(0.0f);
-	springEuler->getCoil().setRestLength(3.0f);
-	springEuler->getCoil().setFixedPosition(glm::vec3(5.0f, 0.0f, 0.0f));		
-	springEuler->getMass().setPosition(glm::vec3(2.0f, 0.0f, 0.0f));
-	springEuler->getMass().setVelocity(glm::vec3(0.0f, 0.0f, 0.0f));	
-	springEuler->getMass().setMass(1.0f);
-	springEuler->applyTransformations();
+	// std::unique_ptr<Spring> springEuler = std::make_unique<Spring>();
+	// springEuler->setName("Euler Spring");
+	// springEuler->useRK4(false);
+	// springEuler->getCoil().setSpringConstant(3.0f);
+	// springEuler->getCoil().setDampeningConstant(0.0f);
+	// springEuler->getCoil().setRestLength(3.0f);
+	// springEuler->getCoil().setFixedPosition(glm::vec3(5.0f, 0.0f, 0.0f));		
+	// springEuler->getMass().setPosition(glm::vec3(2.0f, 0.0f, 0.0f));
+	// springEuler->getMass().setVelocity(glm::vec3(0.0f, 0.0f, 0.0f));	
+	// springEuler->getMass().setMass(1.0f);
+	// springEuler->applyTransformations();
 
-	mGeometries.push_back(std::move(springRK4));	
-	mGeometries.push_back(std::move(springEuler));		
+	// std::unique_ptr<AngularSpring> angularSpring = std::make_unique<AngularSpring>();
+	// angularSpring->setName("Angular Spring");	
+	// angularSpring->getCoil().setSpringConstant(3.0f);
+	// angularSpring->getCoil().setDampeningConstant(0.0f);
+	// angularSpring->getCoil().setRestLength(3.0f);
+	// angularSpring->getCoil().setFixedPosition(glm::vec3(5.0f, 0.0f, 0.0f));
+	// angularSpring->setRestAngle(glm::radians(180.0f));
+	// angularSpring->setAngle(glm::radians(180.0f));
+	// angularSpring->setAngleSpeed(0.0f);
+	// angularSpring->applyTransformations();
+
+	// mGeometries.push_back(std::move(angularSpring));
+	// mGeometries.push_back(std::move(springRK4));	
+	// mGeometries.push_back(std::move(springEuler));	
+	
+	std::unique_ptr<Cloth> cloth = std::make_unique<Cloth>();
+	mGeometries.push_back(std::move(cloth));
 }
 
 BlankScene::~BlankScene()
@@ -78,8 +95,9 @@ void BlankScene::renderScene()
 	
 	float aspectRatio = 1.0f;
 	
-	glm::vec3 eye(0.0, 0.0, 10.0);
-	glm::vec3 look(0.0, 0.0, 0.0);
+	glm::vec3 eye(5.0, 3.0, -3.0);
+	// glm::vec3 eye(0.0, 3.0, -0.5);	
+	glm::vec3 look(5.0, 0.0, 5.0);
 	glm::vec3 up(0.0, 1.0, 0.0);
 	
 	glm::mat4 view = glm::lookAt(eye, look, up);
@@ -105,9 +123,12 @@ void BlankScene::renderScene()
 
 void BlankScene::updateScene(double time)
 {
-	mTime.deltaTime = time - mTime.currentTime;
+	double delta = time - mTime.currentTime;
+	// delta = std::min(delta, 1.0/120.0);
+
+	mTime.deltaTime = delta;
 	mTime.totalTime += mTime.deltaTime;
-	mTime.currentTime = time;
+	mTime.currentTime += delta;
 
 	atlas::utils::Gui::getInstance().update(mTime);
 	

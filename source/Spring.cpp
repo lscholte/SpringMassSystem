@@ -67,6 +67,8 @@ void Spring::updateGeometry(atlas::core::Time<> const &t)
 		//Compute new position and velocity by Euler integration
 		newPosition = mMass.getPosition() + mMass.getVelocity()*t.deltaTime;
 		newVelocity = mMass.getVelocity() + computeAcceleration(mMass.getPosition(), mMass.getVelocity())*t.deltaTime;
+
+		
 	}
 
 	//Update the mass's velocity and position states
@@ -120,10 +122,16 @@ void Spring::applyTransformations()
 	this->transformGeometry(glm::translate(glm::mat4(1.0f), mCoil.getFixedPosition()));
 }
 
+glm::vec3 Spring::computeVelocity(float deltaTime, glm::vec3 const &velocity)
+{
+    return velocity + mMass.getAcceleration()*deltaTime;    
+}
+
 glm::vec3 Spring::computeVelocity(float deltaTime)
 {
-	return mMass.getVelocity() + mMass.getAcceleration()*deltaTime;
-}
+	return computeVelocity(deltaTime, mMass.getVelocity());
+}	
+
 
 glm::vec3 Spring::computeAcceleration(float deltaTime, glm::vec3 const &velocity)
 {

@@ -235,7 +235,7 @@ void Cloth::renderGeometry(atlas::math::Matrix4 const &projection, atlas::math::
             const int current = i*mNumParticlesInWidth + j;
             mVertexPositions[current] = mParticles[current]->getPosition();
             //TODO: Normal
-                //         glm::vec3 normal = glm::normalize(glm::cross(mVertexPositions[index+2] -  mVertexPositions[index], mVertexPositions[index+1] - mVertexPositions[index]));
+                        // glm::vec3 normal = glm::normalize(glm::cross(mVertexPositions[index+2] -  mVertexPositions[index], mVertexPositions[index+1] - mVertexPositions[index]));
     //         mVertexNormals[index] = normal;
     //         mVertexNormals[index+1] = normal;
     //         mVertexNormals[index+2] = normal;
@@ -249,17 +249,43 @@ void Cloth::renderGeometry(atlas::math::Matrix4 const &projection, atlas::math::
     {
         for(int j = 0; j < mNumParticlesInWidth-1; ++j)
         {
-            const int current = i*mNumParticlesInWidth + j;                        
+            glm::vec3 normal;
+
+            const int current = i*mNumParticlesInWidth + j;
+            const int right = current + 1;
+            const int bottom = current + mNumParticlesInWidth;
+            const int bottomRight = bottom + 1;
+
             mVertexIndices[index] = current;
-            mVertexIndices[index+1] = current + mNumParticlesInWidth;
-            mVertexIndices[index+2] = current + mNumParticlesInWidth + 1;
+            mVertexIndices[index+1] = bottom;
+            mVertexIndices[index+2] = bottomRight;
+
+            normal = glm::normalize(
+                glm::cross(mVertexPositions[bottomRight] -  mVertexPositions[current], mVertexPositions[bottom] - mVertexPositions[current])
+            );
+            mVertexNormals[current] += normal;
+            mVertexNormals[bottom] += normal;
+            mVertexNormals[bottomRight] += normal;
+            
 
             mVertexIndices[index+3] = current;
-            mVertexIndices[index+4] = current + mNumParticlesInWidth + 1;
-            mVertexIndices[index+5] = current + 1;
+            mVertexIndices[index+4] = bottomRight;
+            mVertexIndices[index+5] = right;
+
+            normal = glm::normalize(
+                glm::cross(mVertexPositions[right] -  mVertexPositions[current], mVertexPositions[bottomRight] - mVertexPositions[current])
+            );
+            mVertexNormals[current] += normal;
+            mVertexNormals[bottomRight] += normal;
+            mVertexNormals[right] += normal;
 
             index += 6;
         }
+    }
+
+    for(int i = 0; i < mNumParticles; ++i)
+    {
+        mVertexNormals[i] = normalize(mVertexNormals[i]);
     }
 
     glBindVertexArray(mVao);
@@ -269,15 +295,10 @@ void Cloth::renderGeometry(atlas::math::Matrix4 const &projection, atlas::math::
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (GLvoid*)0);
 
-    // glBindBuffer(GL_ARRAY_BUFFER, mNormalBuffer);
-    // glBufferData(GL_ARRAY_BUFFER, 3*mVertexNormals.size()*sizeof(GLfloat), &mVertexNormals[0].x, GL_STATIC_DRAW);
-    // glEnableVertexAttribArray(1);
-    // glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (GLvoid*)0);
-
-    // glBindBuffer(GL_ARRAY_BUFFER, mColorBuffer);
-    // glBufferData(GL_ARRAY_BUFFER, 3*mVertexColors.size()*sizeof(GLfloat), &mVertexColors[0].x, GL_STATIC_DRAW);
-    // glEnableVertexAttribArray(2);
-    // glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (GLvoid*)0);
+    glBindBuffer(GL_ARRAY_BUFFER, mNormalBuffer);
+    glBufferData(GL_ARRAY_BUFFER, 3*mVertexNormals.size()*sizeof(GLfloat), &mVertexNormals[0].x, GL_STATIC_DRAW);
+    glEnableVertexAttribArray(1);
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (GLvoid*)0);
 
     glBindBuffer(GL_ARRAY_BUFFER, mTextureBuffer);
     glBufferData(GL_ARRAY_BUFFER, 2*mVertexTextureCoords.size()*sizeof(GLfloat), &mVertexTextureCoords[0].x, GL_STATIC_DRAW);

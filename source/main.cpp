@@ -1,7 +1,8 @@
 #include <atlas/utils/Application.hpp>
 #include <atlas/utils/WindowSettings.hpp>
 #include <atlas/gl/ErrorCheck.hpp>
-#include "BlankScene.hpp"
+#include "SpringScene.hpp"
+#include "ClothScene.hpp"
 
 int main()
 {
@@ -18,14 +19,11 @@ int main()
 	
 	application.createWindow(settings);
 	
-	atlas::utils::ScenePointer scene = std::make_unique<BlankScene>();
-
-	glDepthFunc(GL_LESS);
-    glEnable(GL_DEPTH_TEST);
-	// glEnable(GL_CULL_FACE);
-	glEnable(GL_MULTISAMPLE);
+	atlas::utils::ScenePointer springScene = std::make_unique<SpringScene>();
+	atlas::utils::ScenePointer clothScene = std::make_unique<ClothScene>();
 	
-	application.addScene(std::move(scene));
+	// application.addScene(std::move(springScene));
+	application.addScene(std::move(clothScene));	
 	application.runApplication();
 	
 	return 0;

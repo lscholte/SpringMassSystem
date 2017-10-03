@@ -2,7 +2,7 @@
 #include "Shader.hpp"
 #include <iostream>
 #include <atlas/utils/Application.hpp>
-#include "BlankScene.hpp"
+#include "ClothScene.hpp"
 
 constexpr GLfloat ClothParticle::POSITIONS[][3] = {
     {0.0, 0.0, 0.0}
@@ -215,7 +215,7 @@ glm::vec3 ClothParticle::computeAcceleration(glm::vec3 const &position, glm::vec
     const float g = 9.81;
     glm::vec3 forceGravity(0.0f, -g*mMass, 0.0f);
 
-    glm::vec3 forceWind = mMass * ((BlankScene *)atlas::utils::Application::getInstance().getCurrentScene())->getWindForce();
+    glm::vec3 forceWind = mMass * ((ClothScene *)atlas::utils::Application::getInstance().getCurrentScene())->getWindForce();
 
     mNetForce += forceGravity + forceWind + mNormalForce;
 

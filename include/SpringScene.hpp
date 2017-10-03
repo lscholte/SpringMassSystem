@@ -1,13 +1,13 @@
-#ifndef BlankScene_hpp
-#define BlankScene_hpp
+#ifndef SpringScene_hpp
+#define SpringScene_hpp
 
 #include <atlas/utils/Scene.hpp>
 
-class BlankScene : public atlas::utils::Scene
+class SpringScene : public atlas::utils::Scene
 {
 	public:
-		BlankScene();
-		~BlankScene();
+		SpringScene();
+		~SpringScene();
 	
 		void renderScene() override;
 		void updateScene(double time) override;
@@ -17,16 +17,14 @@ class BlankScene : public atlas::utils::Scene
         void mouseScrollEvent(double xOffset, double yOffset) override;
 		void keyPressEvent(int key, int scancode, int action, int mods) override;
 		void screenResizeEvent(int width, int height) override;		
-
-		glm::vec3 getWindForce();		
+		void onSceneEnter() override;
+        void onSceneExit() override;
 		
 	private:
 		glm::mat4 mProjection;
 		float mWidth, mHeight;
 
 		bool mPaused;
-
-		glm::vec3 mWindForce;
 };
 
 #endif

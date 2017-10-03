@@ -83,8 +83,8 @@ class ClothParticle : public atlas::utils::Geometry
 
         void addForce(glm::vec3 const &force);
 
-        void setModel(glm::mat4 const &model);		        
-
+        void setModel(glm::mat4 const &model);	
+        
     private:
         std::set<ClothParticle *> mAttachedTo;
 
@@ -102,6 +102,7 @@ class ClothParticle : public atlas::utils::Geometry
         bool mPositionFixed;
 
         glm::vec3 mNetForce;
+        glm::vec3 mNormalForce;
 
         float mDampeningConstant;
 
@@ -110,7 +111,7 @@ class ClothParticle : public atlas::utils::Geometry
         
         static const GLfloat POSITIONS[][3];
 		static const GLfloat COLORS[][3];
-		static const GLint INDICES[][1];
+        static const GLint INDICES[][1];        
 };
 
 #endif

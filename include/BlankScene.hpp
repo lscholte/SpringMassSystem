@@ -17,12 +17,16 @@ class BlankScene : public atlas::utils::Scene
         void mouseScrollEvent(double xOffset, double yOffset) override;
 		void keyPressEvent(int key, int scancode, int action, int mods) override;
 		void screenResizeEvent(int width, int height) override;		
+
+		glm::vec3 getWindForce();		
 		
 	private:
 		glm::mat4 mProjection;
 		float mWidth, mHeight;
 
 		bool mPaused;
+
+		glm::vec3 mWindForce;
 };
 
 #endif

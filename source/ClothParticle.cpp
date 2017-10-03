@@ -1,6 +1,8 @@
 #include "ClothParticle.hpp"
 #include "Shader.hpp"
 #include <iostream>
+#include <atlas/utils/Application.hpp>
+#include "BlankScene.hpp"
 
 constexpr GLfloat ClothParticle::POSITIONS[][3] = {
     {0.0, 0.0, 0.0}
@@ -174,8 +176,8 @@ void ClothParticle::updateGeometry(atlas::core::Time<> const &t)
 	//Update the mass's velocity and position states
     // this->setPosition(newPosition);
     mPosition = newPosition;
-	mVelocity = newVelocity;
-
+    mVelocity = newVelocity;
+    
     mNetForce = glm::vec3(0.0f, 0.0f, 0.0f);    
 
 	// applyTransformations();
@@ -213,7 +215,9 @@ glm::vec3 ClothParticle::computeAcceleration(glm::vec3 const &position, glm::vec
     const float g = 9.81;
     glm::vec3 forceGravity(0.0f, -g*mMass, 0.0f);
 
-    mNetForce += forceGravity;
+    glm::vec3 forceWind = mMass * ((BlankScene *)atlas::utils::Application::getInstance().getCurrentScene())->getWindForce();
+
+    mNetForce += forceGravity + forceWind + mNormalForce;
 
     return mNetForce / mMass;    
 }
@@ -249,4 +253,5 @@ void ClothParticle::renderGeometry(atlas::math::Matrix4 const &projection, atlas
 
 	glBindVertexArray(0);
 
-	mShaders[0].disableShaders();}
+    mShaders[0].disableShaders();
+}

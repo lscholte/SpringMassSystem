@@ -31,6 +31,7 @@ void main()
 
 		float ambient = 0.5;
 		float diffuse = max(dot(L, N), 0.0);
+
 		color = diffuseTexture*ambient + diffuseTexture*diffuse;
 		//FragColor = vec4(FragmentNormal, 1.0);
 	}

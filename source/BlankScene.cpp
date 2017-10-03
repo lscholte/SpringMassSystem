@@ -5,6 +5,7 @@
 #include <atlas/core/GLFW.hpp>
 #include <atlas/utils/GUI.hpp>
 #include "Cloth.hpp"
+#include <glm/gtc/type_ptr.hpp>
 
 BlankScene::BlankScene() :
 	mPaused(true)
@@ -49,7 +50,10 @@ BlankScene::BlankScene() :
 	// mGeometries.push_back(std::move(springEuler));	
 	
 	std::unique_ptr<Cloth> cloth = std::make_unique<Cloth>();
+	// std::unique_ptr<Mass> mass = std::make_unique<Mass>();
+	// mass->setPosition(glm::vec3(5.0f, -1.0f, 5.0f));
 	mGeometries.push_back(std::move(cloth));
+	// mGeometries.push_back(std::move(mass));	
 }
 
 BlankScene::~BlankScene()
@@ -110,6 +114,7 @@ void BlankScene::renderScene()
 	
 	ImGui::Begin("Scene Options");
 	ImGui::Checkbox("Simulation Paused", &mPaused);
+	ImGui::SliderFloat3("Wind Force", value_ptr(mWindForce), -50.0f, 50.0f);	
 	ImGui::End();
 			
 	for(auto &geometry : mGeometries)
@@ -140,3 +145,8 @@ void BlankScene::updateScene(double time)
 		}
 	}
 }	
+
+glm::vec3 BlankScene::getWindForce()
+{
+	return mWindForce;
+}

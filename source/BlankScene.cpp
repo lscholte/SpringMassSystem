@@ -113,6 +113,11 @@ void BlankScene::renderScene()
 	ImGui::SetNextWindowPos(ImVec2(0, 0), ImGuiSetCond_FirstUseEver);
 	
 	ImGui::Begin("Scene Options");
+	ImGui::Text(
+		"Application average %.3f ms/frame (%.1f FPS)",
+		1000.0f / ImGui::GetIO().Framerate,
+		ImGui::GetIO().Framerate
+	);
 	ImGui::Checkbox("Simulation Paused", &mPaused);
 	ImGui::SliderFloat3("Wind Force", value_ptr(mWindForce), -50.0f, 50.0f);	
 	ImGui::End();

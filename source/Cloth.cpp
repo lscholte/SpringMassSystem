@@ -66,9 +66,9 @@ Cloth::Cloth() :
             const int current = i*mNumParticlesInWidth + j;
             ClothParticle *currentParticle = mParticles[current].get();
 
-            const float structuralSpringConstant = 10.0f;
-            const float structuralDampeningConstant = 0.003f;
-            const float shearSpringConstant = 0.5f;
+            const float structuralSpringConstant = 1.0f;
+            const float structuralDampeningConstant = 0.002f;
+            const float shearSpringConstant = 1.0f;
             const float shearDampeningConstant = 0.0f;
             const float bendingSpringConstant = 1.0f;
             const float bendingDampeningConstant = 0.0f;
@@ -172,9 +172,6 @@ Cloth::Cloth() :
     glGenBuffers(1, &mIndexBuffer);
     glGenBuffers(1, &mTextureBuffer);
     
-    // glBindVertexArray(mVao);
-    
-    // glBindVertexArray(0);
 
     int imageWidth, imageHeight, imageComp;    
     stbi_set_flip_vertically_on_load(1);    
@@ -192,7 +189,6 @@ Cloth::Cloth() :
     {   
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, imageWidth, imageHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, image);        
     }
-    // glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, image);
 
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
@@ -213,12 +209,6 @@ Cloth::Cloth() :
 	
 	mShaders[0].compileShaders();
     mShaders[0].linkShaders();
-
-    // for(auto &coil : mCoils)
-    // {
-    //     coil->setSpringConstant(1.0f);
-    // }
-
 }
 
 Cloth::~Cloth()
@@ -234,12 +224,6 @@ void Cloth::renderGeometry(atlas::math::Matrix4 const &projection, atlas::math::
         {
             const int current = i*mNumParticlesInWidth + j;
             mVertexPositions[current] = mParticles[current]->getPosition();
-            //TODO: Normal
-                        // glm::vec3 normal = glm::normalize(glm::cross(mVertexPositions[index+2] -  mVertexPositions[index], mVertexPositions[index+1] - mVertexPositions[index]));
-    //         mVertexNormals[index] = normal;
-    //         mVertexNormals[index+1] = normal;
-    //         mVertexNormals[index+2] = normal;
-
             mVertexTextureCoords[current] = glm::vec2((float) j/(mNumParticlesInWidth-1), (float) i/(mNumParticlesInHeight-1));   
         }
     }
@@ -314,10 +298,8 @@ void Cloth::renderGeometry(atlas::math::Matrix4 const &projection, atlas::math::
     const GLint MODEL_VIEW_PROJECTION_UNIFORM_LOCATION = glGetUniformLocation(mShaders[0].getShaderProgram(), "ModelViewProjection");
     const GLint USE_DIFFUSE_MAP_UNIFORM_LOCATION = glGetUniformLocation(mShaders[0].getShaderProgram(), "UseDiffuseMap");        
     const GLint DIFFUSE_MAP_UNIFORM_LOCATION = glGetUniformLocation(mShaders[0].getShaderProgram(), "DiffuseMap");    
-    // const GLint MODEL_UNIFORM_LOCATION = glGetUniformLocation(mShaders[0].getShaderProgram(), "Model");
 	
 	glUniformMatrix4fv(MODEL_VIEW_PROJECTION_UNIFORM_LOCATION, 1, GL_FALSE, &modelViewProjection[0][0]);
-    // glUniformMatrix4fv(MODEL_UNIFORM_LOCATION, 1, GL_FALSE, &mModel[0][0]);
     
     glActiveTexture(GL_TEXTURE0);
     glUniform1i(DIFFUSE_MAP_UNIFORM_LOCATION, 0);
@@ -339,25 +321,6 @@ void Cloth::renderGeometry(atlas::math::Matrix4 const &projection, atlas::math::
 
 
     mShaders[0].disableShaders();
-
-
-
-
-    // for(auto &coil : mStructuralCoils)
-    // {
-    //     coil->applyTransformations();
-    //     coil->renderGeometry(projection, view);
-    // }
-    // for(auto &coil : mShearCoils)
-    // {
-    //     coil->applyTransformations();
-    //     coil->renderGeometry(projection, view);
-    // }
-    // for(auto &coil : mBendCoils)
-    // {
-    //     coil->applyTransformations();
-    //     coil->renderGeometry(projection, view);
-    // }
 }
 
 void Cloth::updateGeometry(atlas::core::Time<> const &t)
@@ -368,9 +331,9 @@ void Cloth::updateGeometry(atlas::core::Time<> const &t)
     //of the coil
 
     atlas::core::Time<> time = t;
-    time.deltaTime = t.deltaTime / 15.0;
+    time.deltaTime = t.deltaTime / 10.0;
 
-    for(int i = 0; i < 15; ++i)
+    for(int i = 0; i < 10; ++i)
     {
         for(auto &coil : mStructuralCoils)
         { 
@@ -392,9 +355,8 @@ void Cloth::updateGeometry(atlas::core::Time<> const &t)
             particle->updateGeometry(time);
         }
 
-        for(int i = 0; i < 8; ++i)
+        for(int i = 0; i < 4; ++i)
         {
-            // std::random_shuffle(mCoils.begin(), mCoils.end());
             for(auto &coil : mStructuralCoils)
             { 
                 coil->checkStretch();
@@ -409,23 +371,4 @@ void Cloth::updateGeometry(atlas::core::Time<> const &t)
 
 void Cloth::drawGui()
 {
-	// // float ks = mCoils[0]->getSpringConstant();
-    // float kd = mParticles[0]->getDampeningConstant();
-	
-	// ImGui::SetNextWindowSize(ImVec2(300, 100), ImGuiSetCond_FirstUseEver);
-	
-	// ImGui::Begin("Cloth Options");
-	// // ImGui::SliderFloat("Spring Constant", &ks, 0.0f, 50.0f);
-	// ImGui::SliderFloat("Dampening Constant", &kd, 0.0f, 50.0f);
-	// ImGui::End();
-
-    // // for(auto &coil : mCoils)
-    // // {
-    // //     coil->setSpringConstant(ks);
-    // // }
-
-    // for(auto &particle : mParticles)
-    // {
-    //     particle->setDampeningConstant(kd);
-    // }
 }

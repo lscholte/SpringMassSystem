@@ -2,7 +2,6 @@
 #include <atlas/utils/WindowSettings.hpp>
 #include <atlas/gl/ErrorCheck.hpp>
 #include "SpringScene.hpp"
-#include "ClothScene.hpp"
 
 int main()
 {
@@ -20,10 +19,8 @@ int main()
 	application.createWindow(settings);
 	
 	atlas::utils::ScenePointer springScene = std::make_unique<SpringScene>();
-	atlas::utils::ScenePointer clothScene = std::make_unique<ClothScene>();
 	
-	// application.addScene(std::move(springScene));
-	application.addScene(std::move(clothScene));	
+	application.addScene(std::move(springScene));
 	application.runApplication();
 	
 	return 0;

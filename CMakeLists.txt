@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.0 FATAL_ERROR)
 
-project(SpringMassSystem LANGUAGES CXX)
+project(SpringSimulation LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_BUILD_TYPE Debug)
@@ -33,4 +33,4 @@ source_group(include FILES ${INCLUDE_FILES})
 source_group(source FILES ${SOURCE_FILES})
 source_group(shaders FILES ${SHADER_FILES})
 
-add_executable(springMassSystem ${SOURCE_FILES} ${INCLUDE_FILES} ${SHADER_FILES})
+add_executable(springSimulation ${SOURCE_FILES} ${INCLUDE_FILES} ${SHADER_FILES})

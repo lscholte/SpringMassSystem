@@ -18,4 +18,4 @@ Next, create an empty build directory wherever you like. It is suggested to crea
 
 If the build was successful, then you will have an executable named `springSimulation` in your build directory. Execute it with
 
-`./clothSimulation`
+`./springSimulation`

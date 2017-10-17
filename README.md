@@ -19,3 +19,8 @@ Next, create an empty build directory wherever you like. It is suggested to crea
 If the build was successful, then you will have an executable named `springSimulation` in your build directory. Execute it with
 
 `./springSimulation`
+
+# Demo
+See <https://www.youtube.com/watch?v=VaR2oyW_ykI> for a demo of the linear springs with a comparison between RK4 and Euler integration.
+
+See <https://www.youtube.com/watch?v=p9jZ5w0qfR4> for a demo of linear and angular springs both using RK4 integration.
